@@ -1,56 +1,52 @@
 const addForm = document.querySelector('.add');
 const list = document.querySelector('.todos');
-const search = document.querySelector('.search input');
+const search = document.querySelector('.search input'); 
 
+//had to generate this todo template outside to make it reuseable
 const generateTemplate = todo => {
-
     const html = `
         <li class="list-group-item d-flex justify-content-between align-items-center">
-           <span>${todo}</span>
-           <i class="far fa-trash-alt delete"></i>
+            <span>${todo}</span>
+            <i class="far fa-trash-alt delete"></i>
         </li>
     `;
-
     list.innerHTML += html;
-
-};
+}
 
 addForm.addEventListener('submit', e => {
-
     e.preventDefault();
-    const todo = addForm.add.value.trim();
-    console.log(todo);
 
+    //add todos
+    const todo = addForm.add.value.trim();
+    addForm.reset();
+    //to be sure that the new todo has length
     if (todo.length){
         generateTemplate(todo);
-        addForm.reset();
-
-    }  
+    }
 });
 
-// delete todos
 
-addEventListener('click', e => {
-
-    if (e.target.classList.contains('delete')){
+//delete todos
+list.addEventListener('click', e => {
+    if(e.target.classList.contains('delete')){
         e.target.parentElement.remove();
-
-    };
+    }
 });
 
-const filterTodos = (term) => {
+
+//search todo
+const filtertodo = term => {
+    Array.from(list.children)
+        .filter(todo => !todo.textContent.toLowerCase().includes(term))
+        .forEach(todo => todo.classList.add('filtered'));
 
     Array.from(list.children)
-      .filter((todo) => !todo.textContent.toLowerCase().includes(term))
-      .forEach((todo) => todo.classList.add('filtered'));  
-      
-    Array.from(list.children)
-      .filter((todo) => todo.textContent.toLocaleLowerCase().includes(term))
-      .forEach((todo) => todo.classList.remove('filtered'));
-};
+        .filter(todo => todo.textContent.toLowerCase().includes(term))
+        .forEach(todo => todo.classList.remove('filtered'));
 
-// keyup event
-search.addEventListener('keyup', () => {
-    const term = search.value.trim().toLowerCase();
-    filterTodos(term);
+}
+
+search.addEventListener('keyup', e => {
+    const term = search.value.toLowerCase().trim();
+    filtertodo(term);
 });
